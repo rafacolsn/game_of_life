@@ -16,6 +16,7 @@ let abscissa;
 let ordinate;
 let next;
 let state;
+
 // shapes
 function generatePuffer() {
     let puffer = [
@@ -53,23 +54,24 @@ function generatePuffer() {
 
 function generateGlider() {
     let glider = [
-        [0,1],
-        [1,2],
-        [2,0],
-        [2,1],
-        [2,2],
+        [0, 1],
+        [1, 2],
+        [2, 0],
+        [2, 1],
+        [2, 2],
     ]
     generateShape(glider);
 }
+
 // console.log('resolution', resolution)
 
 function generateShape(structure) {
     clicked = false
     started = false;
-    reset()
+    // reset()
     let value = floor(random(slider.value()));
-    let x = floor(cols / 2) - value
-    let y = floor(rows / 2) - value
+    let x = floor(random(0, cols));
+    let y = floor(random(0, rows));
 
     structure.map(coord => {
         grid[x + coord[1]][y + coord[0]] = 1;
@@ -111,7 +113,7 @@ function setup() {
     let space = 30;
     slider.position(10, y)
     gridBtn.position(10, y + space)
-    randomBtn.position(10, y + space*2)
+    randomBtn.position(10, y + space * 2)
     pufferBtn.position(10, y + space * 3)
     gliderBtn.position(10, y + space * 4)
     startBtn.position(10, y + space * 5)
@@ -147,6 +149,7 @@ function randomize() {
         }
     }
 }
+
 function gridRandomize() {
     clicked = false
     started = false;
@@ -154,7 +157,7 @@ function gridRandomize() {
 
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            grid[i][j] = floor(random(slider.value()/10)) === 0 ? 1 : 0;
+            grid[i][j] = floor(random(slider.value() / 10)) === 0 ? 1 : 0;
         }
     }
 }
