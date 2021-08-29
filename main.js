@@ -69,12 +69,13 @@ function generateShape(structure) {
     clicked = false
     started = false;
     // reset()
-    let value = floor(random(slider.value()));
     let x = floor(random(0, cols));
     let y = floor(random(0, rows));
 
+    let a = floor(random(2));
+    let b = a === 1 ? 0 : 1;
     structure.map(coord => {
-        grid[x + coord[1]][y + coord[0]] = 1;
+        grid[x + coord[a]][y + coord[b]] = 1;
     })
 
 }
