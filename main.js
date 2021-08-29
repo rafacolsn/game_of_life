@@ -5,7 +5,7 @@
     Any live cell with more than three live neighbours dies, as if by overpopulation.
     Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
  */
-
+let cnv;
 let grid;
 let cols;
 let rows;
@@ -16,54 +16,8 @@ let abscissa;
 let ordinate;
 let next;
 let state;
-console.log('resolution', resolution)
 
-function setup() {
-    let cnv = createCanvas(window.innerWidth, window.innerHeight);
-    cnv.position(0, 0)
-    button = createButton('random');
-    startBtn = createButton('start');
-    resetBtn = createButton('reset');
-    button.position(10, 10)
-    startBtn.position(10, 40)
-    resetBtn.position(10, 70)
-
-    cols = floor(width / resolution);
-    rows = floor(height / resolution);
-    console.log(rows, 'lignes');
-    console.log(cols, 'colonnes');
-    grid = make2DArray(cols, rows);
-    reset();
-    button.mousePressed(randomize);
-    startBtn.mousePressed(switchStart);
-    resetBtn.mousePressed(reset);
-}
-
-function reset() {
-    for (let i = 0; i < cols; i++) {
-        for (let j = 0; j < rows; j++) {
-            grid[i][j] = 0;
-        }
-    }
-    started = false;
-}
-
-function randomize() {
-    started = false;
-    reset()
-    let x = floor(cols / 2)
-    let y = floor(rows / 2)
-
-    for (let i = x; i < x + random(cols); i++) {
-        for (let j = y; j < y + random(rows); j++) {
-            grid[i][j] = floor(random(2));
-        }
-    }
-}
-
-function switchStart() {
-    started = ! started
-}
+// console.log('resolution', resolution)
 
 function make2DArray(cols, rows) {
     let arr = new Array(cols);
@@ -73,14 +27,82 @@ function make2DArray(cols, rows) {
     return arr
 }
 
+function reset() {
+    clicked = false;
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            grid[i][j] = 0;
+        }
+    }
+    started = false;
+}
 
-function mouseClicked() {
-    clicked = true;
+function setup() {
+    cnv = createCanvas(window.innerWidth, window.innerHeight);
+    cnv.position(0, 0)
+    slider = createSlider(20, 100, 5)
+    // console.log(slider.value)
+    randomBtn = createButton('random');
+    startBtn = createButton('start');
+    resetBtn = createButton('reset');
+    let y = 0;
+    slider.position(10, y)
+    randomBtn.position(10, y + 30)
+    startBtn.position(10, y + 60)
+    resetBtn.position(10, y + 90)
+
+    cols = floor(width / resolution);
+    rows = floor(height / resolution);
+    // console.log(rows, 'lignes');
+    // console.log(cols, 'colonnes');
+    grid = make2DArray(cols, rows);
+
+    reset();
+    randomBtn.mousePressed(randomize);
+    startBtn.mousePressed(switchStart);
+    resetBtn.mousePressed(reset);
+}
+
+
+function randomize() {
+    clicked = false
+    started = false;
+    reset()
+    let value = floor(random(slider.value()));
+    let x = floor(cols / 2) - value
+    let y = floor(rows / 2) - value
+
+    for (let i = x; i < x + floor(random(slider.value())); i++) {
+        for (let j = y; j < y + floor(random(slider.value())); j++) {
+            randomNeighbors(grid, i, j);
+        }
+    }
+}
+
+function switchStart() {
+    started = ! started
+}
+
+function mouseReleased() {
+    clicked = false;
+}
+
+function mousePressed() {
+    clicked = ! clicked;
+}
+
+function switchState() {
+    abscissa = floor(mouseX / resolution)
+    ordinate = floor(mouseY / resolution)
+    grid[abscissa][ordinate] = grid[abscissa][ordinate] === 0 ? 1 : 1;
 }
 
 function draw() {
     background(0)
 
+    if (clicked) {
+        switchState()
+    }
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             let x = i * resolution;
@@ -91,27 +113,14 @@ function draw() {
             }
         }
     }
-    if (clicked) {
-        abscissa = floor(pmouseX / resolution)
-        ordinate = floor(mouseY / resolution)
-        console.log(abscissa)
-        if (started) {
-            grid = next;
-        }
-        if (grid[abscissa][ordinate] === 1) {
-            grid[abscissa][ordinate] = 0;
-        } else {
-            grid[abscissa][ordinate] = 1;
-        }
-        clicked = false;
-    }
-
     if (started) {
         start();
     }
 }
 
+
 function start() {
+    clicked = false;
     next = make2DArray(cols, rows);
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
@@ -166,5 +175,17 @@ function countNeighbors(grid, x, y) {
     }
     sum -= grid[x][y];
     return sum;
+}
+
+function randomNeighbors(table, x, y) {
+
+    for (let i = -1; i < 2; i++) {
+        for (let j = -1; j < 2; j++) {
+            let col = (x + i + cols) % cols
+            let row = (y + j + rows) % rows
+            table[col][row] = floor(random(2)) === 0 ? 1 : 0;
+        }
+    }
+    grid = table;
 }
 
