@@ -101,19 +101,21 @@ function setup() {
     cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.position(0, 0)
     slider = createSlider(20, 100, 5)
-    randomBtn = createButton('aléatoire');
+    gridBtn = createButton('grille aléatoire');
+    randomBtn = createButton('départ aléatoire');
     pufferBtn = createButton('canon');
     gliderBtn = createButton('planneur');
-    startBtn = createButton('start');
+    startBtn = createButton('start/pause');
     resetBtn = createButton('reset');
     let y = 0;
     let space = 30;
     slider.position(10, y)
-    randomBtn.position(10, y + space)
-    pufferBtn.position(10, y + space * 2)
-    gliderBtn.position(10, y + space * 3)
-    startBtn.position(10, y + space * 4)
-    resetBtn.position(10, y + space * 5)
+    gridBtn.position(10, y + space)
+    randomBtn.position(10, y + space*2)
+    pufferBtn.position(10, y + space * 3)
+    gliderBtn.position(10, y + space * 4)
+    startBtn.position(10, y + space * 5)
+    resetBtn.position(10, y + space * 6)
 
     cols = floor(width / resolution);
     rows = floor(height / resolution);
@@ -122,6 +124,7 @@ function setup() {
     grid = make2DArray(cols, rows);
 
     reset();
+    gridBtn.mousePressed(gridRandomize);
     randomBtn.mousePressed(randomize);
     pufferBtn.mousePressed(generatePuffer);
     gliderBtn.mousePressed(generateGlider);
@@ -141,6 +144,17 @@ function randomize() {
     for (let i = x; i < x + floor(random(slider.value())); i++) {
         for (let j = y; j < y + floor(random(slider.value())); j++) {
             randomNeighbors(grid, i, j);
+        }
+    }
+}
+function gridRandomize() {
+    clicked = false
+    started = false;
+    reset()
+
+    for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+            grid[i][j] = floor(random(slider.value()/10)) === 0 ? 1 : 0;
         }
     }
 }
