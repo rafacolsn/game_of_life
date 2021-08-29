@@ -16,8 +16,66 @@ let abscissa;
 let ordinate;
 let next;
 let state;
+// shapes
+function generatePuffer() {
+    let puffer = [
+        [4, 3],
+        [5, 2],
+        [5, 3],
+        [3, 12],
+        [4, 12],
+        [5, 12],
+        [2, 13],
+        [1, 14],
+        [1, 15],
+        [6, 13],
+        [7, 14],
+        [7, 15],
+        [4, 25],
+        [4, 26],
+        [3, 26],
+        [8, 25],
+        [8, 26],
+        [9, 26],
+        [7, 28],
+        [6, 28],
+        [5, 28],
+        [7, 29],
+        [6, 29],
+        [5, 29],
+        [6, 30],
+        [6, 37],
+        [7, 37],
+        [7, 36],
+    ];
+    generateShape(puffer);
+}
 
+function generateGlider() {
+    let glider = [
+        [0,1],
+        [1,2],
+        [2,0],
+        [2,1],
+        [2,2],
+    ]
+    generateShape(glider);
+}
 // console.log('resolution', resolution)
+
+function generateShape(structure) {
+    clicked = false
+    started = false;
+    reset()
+    let value = floor(random(slider.value()));
+    let x = floor(cols / 2) - value
+    let y = floor(rows / 2) - value
+
+    structure.map(coord => {
+        grid[x + coord[1]][y + coord[0]] = 1;
+    })
+
+}
 
 function make2DArray(cols, rows) {
     let arr = new Array(cols);
@@ -29,11 +87,13 @@ function make2DArray(cols, rows) {
 
 function reset() {
     clicked = false;
+
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
             grid[i][j] = 0;
         }
     }
+
     started = false;
 }
 
@@ -41,15 +101,19 @@ function setup() {
     cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.position(0, 0)
     slider = createSlider(20, 100, 5)
-    // console.log(slider.value)
-    randomBtn = createButton('random');
+    randomBtn = createButton('aléatoire');
+    pufferBtn = createButton('canon');
+    gliderBtn = createButton('planneur');
     startBtn = createButton('start');
     resetBtn = createButton('reset');
     let y = 0;
+    let space = 30;
     slider.position(10, y)
-    randomBtn.position(10, y + 30)
-    startBtn.position(10, y + 60)
-    resetBtn.position(10, y + 90)
+    randomBtn.position(10, y + space)
+    pufferBtn.position(10, y + space * 2)
+    gliderBtn.position(10, y + space * 3)
+    startBtn.position(10, y + space * 4)
+    resetBtn.position(10, y + space * 5)
 
     cols = floor(width / resolution);
     rows = floor(height / resolution);
@@ -59,6 +123,8 @@ function setup() {
 
     reset();
     randomBtn.mousePressed(randomize);
+    pufferBtn.mousePressed(generatePuffer);
+    gliderBtn.mousePressed(generateGlider);
     startBtn.mousePressed(switchStart);
     resetBtn.mousePressed(reset);
 }
