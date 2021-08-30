@@ -18,50 +18,126 @@ let next;
 let state;
 
 // shapes
-function generatePuffer() {
-    let puffer = [
-        [4, 3],
-        [5, 2],
-        [5, 3],
-        [3, 12],
-        [4, 12],
-        [5, 12],
-        [2, 13],
-        [1, 14],
-        [1, 15],
-        [6, 13],
-        [7, 14],
-        [7, 15],
-        [4, 25],
-        [4, 26],
-        [3, 26],
-        [8, 25],
-        [8, 26],
-        [9, 26],
-        [7, 28],
-        [6, 28],
-        [5, 28],
-        [7, 29],
-        [6, 29],
-        [5, 29],
-        [6, 30],
-        [6, 37],
-        [7, 37],
-        [7, 36],
-    ];
-    generateShape(puffer);
-}
+let u = [
+    [1, 1],
+    [1, 2],
+    [1, 3],
+    [2, 1],
+    [3, 1],
+    [3, 1],
+    [3, 2],
+    [3, 3],
+]
+let spaceship = [
+    [0, 0],
+    [0, 3],
+    [1, 4],
+    [2, 0],
+    [2, 4],
+    [3, 1],
+    [3, 2],
+    [3, 3],
+    [3, 4],
+]
+let HWSS = [
+    [1, 3],
+    [1, 4],
+    [2, 1],
+    [2, 6],
+    [3, 7],
+    [4, 1],
+    [4, 7],
+    [5, 2],
+    [5, 3],
+    [5, 4],
+    [5, 5],
+    [5, 6],
+    [5, 7],
+];
+let puffer = [
+    [4, 3],
+    [5, 2],
+    [5, 3],
+    [3, 12],
+    [4, 12],
+    [5, 12],
+    [2, 13],
+    [1, 14],
+    [1, 15],
+    [6, 13],
+    [7, 14],
+    [7, 15],
+    [4, 25],
+    [4, 26],
+    [3, 26],
+    [8, 25],
+    [8, 26],
+    [9, 26],
+    [7, 28],
+    [6, 28],
+    [5, 28],
+    [7, 29],
+    [6, 29],
+    [5, 29],
+    [6, 30],
+    [6, 37],
+    [7, 37],
+    [7, 36],
+];
+let glider = [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+    [0, 1],
+    [1, 2],
+]
+let tagalon = [
+    [1, 1],
+    [1, 2],
+    [1, 2],
+    [1, 3],
+    [1, 4],
+    [2, 1],
+    [2, 5],
+    [2, 5],
+    [2, 15],
+    [3, 1],
+    [3, 13],
+    [3, 14],
+    [4, 2],
+    [4, 5],
+    [4, 8],
+    [4, 9],
+    [4, 15],
+    [4, 16],
+    [4, 17],
+    [5, 7],
+    [5, 8],
+    [5, 9],
+    [5, 16],
+    [5, 17],
+    [5, 18],
+    [9, 1],
+    [9, 2],
+    [9, 2],
+    [9, 3],
+    [9, 4],
+    [8, 1],
+    [8, 5],
+    [8, 5],
+    [8, 15],
+    [7, 1],
+    [7, 13],
+    [7, 14],
+    [6, 2],
+    [6, 5],
+    [6, 8],
+    [6, 9],
+    [6, 15],
+    [6, 16],
+    [6, 17],
 
-function generateGlider() {
-    let glider = [
-        [0, 1],
-        [1, 2],
-        [2, 0],
-        [2, 1],
-        [2, 2],
-    ]
-    generateShape(glider);
-}
+];
 
 // console.log('resolution', resolution)
 
@@ -74,9 +150,10 @@ function generateShape(structure) {
 
     let a = floor(random(2));
     let b = a === 1 ? 0 : 1;
+    let negative = floor(random(2)) * 2 - 1;
     structure.map(coord => {
-        grid[x + coord[a]][y + coord[b]] = 1;
-    })
+        grid[x + (coord[a] * negative)][y + (coord[b])] = 1;
+    });
 
 }
 
@@ -96,29 +173,62 @@ function reset() {
             grid[i][j] = 0;
         }
     }
-
     started = false;
+}
+
+function selectShape() {
+    switch (sel.value()) {
+        case 'le U':
+            generateShape(u);
+            break;
+        case 'planneur':
+            generateShape(glider);
+            break;
+        case 'vaisseau':
+            generateShape(spaceship);
+            break;
+        case 'gros vaisseau':
+            generateShape(HWSS);
+            break;
+        case 'canon':
+            generateShape(puffer);
+            break;
+        case 'tagalon':
+            generateShape(tagalon);
+            break;
+    }
 }
 
 function setup() {
     cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.position(0, 0)
-    slider = createSlider(20, 100, 5)
+    // slider = createSlider(20, 100, 1)
     gridBtn = createButton('grille aléatoire');
     randomBtn = createButton('départ aléatoire');
-    pufferBtn = createButton('canon');
-    gliderBtn = createButton('planneur');
+
+    sel = createSelect();
+
+    sel.option('choisir une forme');
+    sel.option('le U');
+    sel.option('planneur');
+    sel.option('vaisseau');
+    sel.option('gros vaisseau');
+    sel.option('canon');
+    sel.option('tagalon');
+    sel.changed(selectShape);
+
+    // pufferBtn = createButton('canon');
+    // gliderBtn = createButton('planneur');
     startBtn = createButton('start/pause');
     resetBtn = createButton('reset');
     let y = 0;
     let space = 30;
-    slider.position(10, y)
-    gridBtn.position(10, y + space)
-    randomBtn.position(10, y + space * 2)
-    pufferBtn.position(10, y + space * 3)
-    gliderBtn.position(10, y + space * 4)
-    startBtn.position(10, y + space * 5)
-    resetBtn.position(10, y + space * 6)
+    // slider.position(10, y)
+    gridBtn.position(10, y)
+    randomBtn.position(10, y + space)
+    sel.position(10, y + space * 2);
+    startBtn.position(10, y + space * 3)
+    resetBtn.position(10, y + space * 4)
 
     cols = floor(width / resolution);
     rows = floor(height / resolution);
@@ -129,8 +239,6 @@ function setup() {
     reset();
     gridBtn.mousePressed(gridRandomize);
     randomBtn.mousePressed(randomize);
-    pufferBtn.mousePressed(generatePuffer);
-    gliderBtn.mousePressed(generateGlider);
     startBtn.mousePressed(switchStart);
     resetBtn.mousePressed(reset);
 }
@@ -140,12 +248,12 @@ function randomize() {
     clicked = false
     started = false;
     reset()
-    let value = floor(random(slider.value()));
+    let value = floor(random(20, 50));
     let x = floor(cols / 2) - value
     let y = floor(rows / 2) - value
 
-    for (let i = x; i < x + floor(random(slider.value())); i++) {
-        for (let j = y; j < y + floor(random(slider.value())); j++) {
+    for (let i = x; i < x + floor(random(1,5)); i++) {
+        for (let j = y; j < y + floor(random(1,5)); j++) {
             randomNeighbors(grid, i, j);
         }
     }
@@ -158,7 +266,7 @@ function gridRandomize() {
 
     for (let i = 0; i < cols; i++) {
         for (let j = 0; j < rows; j++) {
-            grid[i][j] = floor(random(slider.value() / 10)) === 0 ? 1 : 0;
+            grid[i][j] = floor(random(5)) === 0 ? 1 : 0;
         }
     }
 }
