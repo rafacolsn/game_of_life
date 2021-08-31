@@ -16,128 +16,206 @@ let abscissa;
 let ordinate;
 let next;
 let state;
+const shapes = {
+    u: [
+        [1, 1],
+        [1, 2],
+        [1, 3],
+        [2, 1],
+        [3, 1],
+        [3, 1],
+        [3, 2],
+        [3, 3],
+    ],
+    r: [
+        [1, 2],
+        [2, 2],
+        [2, 3],
+        [3, 1],
+        [3, 2],
+    ],
+    spaceship: [
+        [0, 0],
+        [0, 3],
+        [1, 4],
+        [2, 0],
+        [2, 4],
+        [3, 1],
+        [3, 2],
+        [3, 3],
+        [3, 4],
+    ],
+    puffer: [
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [1, 5],
+        [2, 1],
+        [2, 5],
+        [3, 5],
+        [4, 1],
+        [4, 4],
+        [7, 2],
+        [8, 3],
+        [9, 3],
+        [10, 3],
+        [10, 2],
+        [11, 1],
+        [15, 2],
+        [15, 3],
+        [15, 4],
+        [15, 5],
+        [16, 1],
+        [16, 5],
+        [17, 5],
+        [18, 1],
+        [18, 4],
+    ],
+    HWSS: [
+        [1, 3],
+        [1, 4],
+        [2, 1],
+        [2, 6],
+        [3, 7],
+        [4, 1],
+        [4, 7],
+        [5, 2],
+        [5, 3],
+        [5, 4],
+        [5, 5],
+        [5, 6],
+        [5, 7],
+    ],
+    canon: [
+        [4, 3],
+        [5, 2],
+        [5, 3],
+        [3, 12],
+        [4, 12],
+        [5, 12],
+        [2, 13],
+        [1, 14],
+        [1, 15],
+        [6, 13],
+        [7, 14],
+        [7, 15],
+        [4, 25],
+        [4, 26],
+        [3, 26],
+        [8, 25],
+        [8, 26],
+        [9, 26],
+        [7, 28],
+        [6, 28],
+        [5, 28],
+        [7, 29],
+        [6, 29],
+        [5, 29],
+        [6, 30],
+        [6, 37],
+        [7, 37],
+        [7, 36],
+    ],
+    glider: [
+        [2, 0],
+        [2, 1],
+        [2, 2],
+        [0, 1],
+        [1, 2],
+    ],
+    tagalon: [
+        [1, 1],
+        [1, 2],
+        [1, 2],
+        [1, 3],
+        [1, 4],
+        [2, 1],
+        [2, 5],
+        [2, 5],
+        [2, 15],
+        [3, 1],
+        [3, 13],
+        [3, 14],
+        [4, 2],
+        [4, 5],
+        [4, 8],
+        [4, 9],
+        [4, 15],
+        [4, 16],
+        [4, 17],
+        [5, 7],
+        [5, 8],
+        [5, 9],
+        [5, 16],
+        [5, 17],
+        [5, 18],
+        [9, 1],
+        [9, 2],
+        [9, 2],
+        [9, 3],
+        [9, 4],
+        [8, 1],
+        [8, 5],
+        [8, 5],
+        [8, 15],
+        [7, 1],
+        [7, 13],
+        [7, 14],
+        [6, 2],
+        [6, 5],
+        [6, 8],
+        [6, 9],
+        [6, 15],
+        [6, 16],
+        [6, 17],
+    ],
+    machine: [
+        [1,1],
+        [1,2],
+        [1,3],
+        [1,5],
+        [2,1],
+        [3,4],
+        [3,5],
+        [4,2],
+        [4,3],
+        [4,5],
+        [5,1],
+        [5,3],
+        [5,5],
+    ],
+    line:[
+        [1,1],
+        [1,2],
+        [1,3],
+        [1,4],
+        [1,5],
+        [1,6],
+        [1,7],
+        [1,8],
+        [1,10],
+        [1,11],
+        [1,12],
+        [1,13],
+        [1,14],
+        [1,18],
+        [1,19],
+        [1,20],
+        [1,27],
+        [1,28],
+        [1,29],
+        [1,30],
+        [1,31],
+        [1,32],
+        [1,33],
+        [1,35],
+        [1,36],
+        [1,37],
+        [1,38],
+        [1,39],
+    ]
+}
 
-// shapes
-let u = [
-    [1, 1],
-    [1, 2],
-    [1, 3],
-    [2, 1],
-    [3, 1],
-    [3, 1],
-    [3, 2],
-    [3, 3],
-]
-let spaceship = [
-    [0, 0],
-    [0, 3],
-    [1, 4],
-    [2, 0],
-    [2, 4],
-    [3, 1],
-    [3, 2],
-    [3, 3],
-    [3, 4],
-]
-let HWSS = [
-    [1, 3],
-    [1, 4],
-    [2, 1],
-    [2, 6],
-    [3, 7],
-    [4, 1],
-    [4, 7],
-    [5, 2],
-    [5, 3],
-    [5, 4],
-    [5, 5],
-    [5, 6],
-    [5, 7],
-];
-let puffer = [
-    [4, 3],
-    [5, 2],
-    [5, 3],
-    [3, 12],
-    [4, 12],
-    [5, 12],
-    [2, 13],
-    [1, 14],
-    [1, 15],
-    [6, 13],
-    [7, 14],
-    [7, 15],
-    [4, 25],
-    [4, 26],
-    [3, 26],
-    [8, 25],
-    [8, 26],
-    [9, 26],
-    [7, 28],
-    [6, 28],
-    [5, 28],
-    [7, 29],
-    [6, 29],
-    [5, 29],
-    [6, 30],
-    [6, 37],
-    [7, 37],
-    [7, 36],
-];
-let glider = [
-    [2, 0],
-    [2, 1],
-    [2, 2],
-    [0, 1],
-    [1, 2],
-]
-let tagalon = [
-    [1, 1],
-    [1, 2],
-    [1, 2],
-    [1, 3],
-    [1, 4],
-    [2, 1],
-    [2, 5],
-    [2, 5],
-    [2, 15],
-    [3, 1],
-    [3, 13],
-    [3, 14],
-    [4, 2],
-    [4, 5],
-    [4, 8],
-    [4, 9],
-    [4, 15],
-    [4, 16],
-    [4, 17],
-    [5, 7],
-    [5, 8],
-    [5, 9],
-    [5, 16],
-    [5, 17],
-    [5, 18],
-    [9, 1],
-    [9, 2],
-    [9, 2],
-    [9, 3],
-    [9, 4],
-    [8, 1],
-    [8, 5],
-    [8, 5],
-    [8, 15],
-    [7, 1],
-    [7, 13],
-    [7, 14],
-    [6, 2],
-    [6, 5],
-    [6, 8],
-    [6, 9],
-    [6, 15],
-    [6, 16],
-    [6, 17],
-
-];
 
 // console.log('resolution', resolution)
 
@@ -177,29 +255,43 @@ function reset() {
 }
 
 function selectShape() {
+
     switch (sel.value()) {
         case 'le U':
-            generateShape(u);
+            generateShape(shapes.u);
+            break;
+        case 'le pentomino R':
+            generateShape(shapes.r);
+            break;
+        case 'la ligne':
+            generateShape(shapes.line);
             break;
         case 'planneur':
-            generateShape(glider);
+            generateShape(shapes.glider);
             break;
         case 'vaisseau':
-            generateShape(spaceship);
+            generateShape(shapes.spaceship);
             break;
         case 'gros vaisseau':
-            generateShape(HWSS);
+            generateShape(shapes.HWSS);
+            break;
+        case 'machine tournante':
+            generateShape(shapes.machine);
             break;
         case 'canon':
-            generateShape(puffer);
+            generateShape(shapes.canon);
+            break;
+        case 'puffeur':
+            generateShape(shapes.puffer);
             break;
         case 'tagalon':
-            generateShape(tagalon);
+            generateShape(shapes.tagalon);
             break;
     }
 }
 
 function setup() {
+
     cnv = createCanvas(window.innerWidth, window.innerHeight);
     cnv.position(0, 0)
     // slider = createSlider(20, 100, 1)
@@ -210,15 +302,17 @@ function setup() {
 
     sel.option('choisir une forme');
     sel.option('le U');
+    sel.option('le pentomino R');
     sel.option('planneur');
     sel.option('vaisseau');
     sel.option('gros vaisseau');
-    sel.option('canon');
     sel.option('tagalon');
+    sel.option('machine tournante');
+    sel.option('la ligne');
+    sel.option('canon');
+    sel.option('puffeur');
     sel.changed(selectShape);
 
-    // pufferBtn = createButton('canon');
-    // gliderBtn = createButton('planneur');
     startBtn = createButton('start/pause');
     resetBtn = createButton('reset');
     let y = 0;
@@ -252,8 +346,8 @@ function randomize() {
     let x = floor(cols / 2) - value
     let y = floor(rows / 2) - value
 
-    for (let i = x; i < x + floor(random(1,5)); i++) {
-        for (let j = y; j < y + floor(random(1,5)); j++) {
+    for (let i = x; i < x + floor(random(1, 5)); i++) {
+        for (let j = y; j < y + floor(random(1, 5)); j++) {
             randomNeighbors(grid, i, j);
         }
     }
